@@ -1,3 +1,11 @@
+'''
+
+    This programme downloads cyclone track files on the system of usno.navy.mil
+    using URL method.
+    
+'''
+
+
 import urllib
 import os, os.path
 
@@ -28,8 +36,11 @@ while year > 1979:
         
         #Generate filename
         filename = Number + Year + '.txt'
+        
+        #Download the file
         urllib.urlretrieve (url,filename)
         number += 1    
     
+    #Go up one directory
     os.chdir('..')
     year -= 1
