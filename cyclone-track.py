@@ -2,8 +2,40 @@
 import os, os.path
 import numpy as np
 
+#Define a function to convert latitude and longitude strings to floats
+def convert(a):
+    A = list(a)
+    for i in A:
+        #Remove any spacebar
+        if i == ' ':
+            A.remove(i)
+        
+        #If north then it is positive, no sign
+        elif i == 'N':
+            A.remove(i)
+            
+        #If south then it is negative, add - sign
+        elif i == 'S':
+            A.remove(i)
+            A.insert(0,'-')
+        
+        #If north then it is positive, no sign        
+        elif i == 'E':
+            A.remove(i)
+    
+        #If west then it is negative, add - sign
+        elif i == 'W':
+            A.remove(i)
+            A.insert(0,'-')
+        
+    return float("".join(A))/10.
+
+
+
+
+os.chdir('/Users/nguyenquang30795/Desktop/BSc Project/cyclone-data')
 #List all the files in the folder
-filelist = os.listdir('cyclone-data/bwp.2014.dat')
+filelist = os.listdir('2014')
 
 #Create empty list to store longitude and latitude information of all cyclones
 cyclone_track = []
@@ -14,7 +46,7 @@ while cyclone < len([name for name in filelist]):
     #Get the file name
     filenameindex = filelist[cyclone]
 
-    filename = 'cyclone-data/bwp.2014.dat/'+filenameindex
+    filename = '2014/'+filenameindex
     
     #Count the number of lines
     with open (filename) as f:
@@ -36,18 +68,23 @@ while cyclone < len([name for name in filelist]):
         raw_data.append(temp.split(','),)
         i += 1
     
-    #Create an empty list to store longitude and latitude of each cyclone
-    data = []
+    #Create empty list for longitude and latitude seperately
+    lon = []
+    lat = []
     
     #Extract longitude and latitude
     i = 0
     while i < len(raw_data):
         #Get each line
         line = raw_data[i]
-        #Get the longitude and latitude
-        data.append([line[6],line[7]])
+        
+        #Get the longitude and latitude and convert it to floats
+        lat.append(convert(line[6]))
+        lon.append(convert(line[7]))
         i += 1
     
+    #Combine longitude and latitude data to one
+    data = [lon,lat]
     cyclone_track.append(data)
     cyclone += 1
     
