@@ -87,5 +87,10 @@ while cyclone < len([name for name in filelist]):
     data = [lon,lat]
     cyclone_track.append(data)
     cyclone += 1
-    
-print cyclone_track
+
+file = open('cyclone-track.txt','w')
+file.write('[')
+for item in cyclone_track:
+    file.write('%s,' % item)
+    file.write(']')
+file.close()
