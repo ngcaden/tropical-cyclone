@@ -65,7 +65,6 @@ while point_order < (len(lon)-1):
             #If moving from sea to land then include
             if a == False:
                 landfall_raw.append(i)
-            print i
         i += 1
     
     # Estimate the latitude of landfall
@@ -81,11 +80,6 @@ while point_order < (len(lon)-1):
     
     
 print landfall
-
-
-
-
-
 
 
 

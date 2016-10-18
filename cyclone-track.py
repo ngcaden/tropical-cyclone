@@ -1,6 +1,7 @@
 #Import libraries
 import os, os.path
 import numpy as np
+import json
 
 #Define a function to convert latitude and longitude strings to floats
 def convert(a):
@@ -88,9 +89,6 @@ while cyclone < len([name for name in filelist]):
     cyclone_track.append(data)
     cyclone += 1
 
-file = open('cyclone-track.txt','w')
-file.write('[')
-for item in cyclone_track:
-    file.write('%s,' % item)
-    file.write(']')
-file.close()
+with open('cyclone-track','wb') as dump:
+    dump.write(json.dumps(cyclone_track))
+
