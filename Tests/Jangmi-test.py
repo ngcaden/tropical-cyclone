@@ -4,6 +4,23 @@ import matplotlib.pyplot as plt
 from matplotlib.path import Path
 import numpy as np
 import time
+from urllib2 import urlopen
+import json
+
+# Get country method
+def getplace(location):
+    url = "http://maps.googleapis.com/maps/api/geocode/json?"
+    url += "latlng=%s,%s&sensor=false" % (location[1], location[0])
+    v = urlopen(url).read()
+    j = json.loads(v)
+    components = j['results'][0]['address_components']
+    country = None
+    for c in components:
+        if "country" in c['types']:
+            country = c['long_name']
+    return str(country)
+
+resolution = 'l'
 
 start_time = time.time()
 
@@ -16,8 +33,13 @@ point_order = 0
 
 #List for landfall latitude
 landfall = []
+landfall_country_raw = []
+landfall_raw = []
+    
 
 while point_order < (len(lon)-1):
+    plt.figure(point_order)
+    
     # Get test points
     lon_0, lon_1 = lon[point_order], lon[(point_order +1)]
     lat_0, lat_1 = lat[point_order], lat[(point_order +1)]
@@ -28,7 +50,7 @@ while point_order < (len(lon)-1):
     
     # Setup azimuthal equidistant projection basemap for calculating distance 
     # between 2 points
-    map = Basemap(width=width,height=width,projection='aeqd',resolution='i',
+    map = Basemap(width=width,height=width,projection='aeqd',resolution=resolution,
                 lat_0=lat_0,lon_0=lon_0)
     
     # Calculate the distance between 2 points
@@ -53,47 +75,48 @@ while point_order < (len(lon)-1):
     
     print Land
     
-    # List to record landfall raw data
-    landfall_raw = []
-    
+
     # Check for landfall points
     i = 0
-    while i < (number_points -2):
+    while i < (number_points-1):
         a = Land[i]
         b = Land[i+1]
         if a != b:
             #If moving from sea to land then include
             if a == False:
-                landfall_raw.append(i)
+                # Estimate the latitude of landfall
+                longitude_raw = ((Points[0])[i+1]+(Points[0])[i])/2.
+                latitude_raw = ((Points[1])[i+1]+(Points[1])[i])/2.
+                #Convert to normal longitude and latitude
+                landfall_point = map(longitude_raw,latitude_raw, inverse=True)
+                landfall_raw.append(landfall_point)
+                landfall_country_raw.append(getplace(landfall_point))
         i += 1
+ 
+    #map.drawcoastlines()
+    ## draw a boundary around the map, fill the background.
+    ## this background will end up being the ocean color, since
+    ## the continents will be drawn on top.
+    #map.drawmapboundary(fill_color='aqua')
+    ## fill continents, set lake color same as ocean color.
+    #map.fillcontinents(color='coral',lake_color='aqua')
+    #map.plot(Points[0],Points[1],'ko')
     
-    # Estimate the latitude of landfall
-    for item in landfall_raw:
-        longitude_raw = ((Points[0])[i+1]+(Points[0])[i])/2.
-        latitude_raw = ((Points[1])[i+1]+(Points[1])[i])/2.
-        #Convert to normal longitude and latitude
-        landfall_point = map(longitude_raw,latitude_raw, inverse=True)
-        latitude = landfall_point[1]
-        landfall.append(latitude)
-    
-    point_order += 1    
-    
-    
+    point_order += 1 
+
+landfall_country = []
+
+landfall_order = 0
+while landfall_order < len(landfall_country_raw):
+    x = landfall_country_raw[landfall_order]
+    if x not in landfall_country:
+        landfall_country.append(x)
+        landfall.append(landfall_raw[landfall_order])
+    landfall_order += 1
+print landfall_raw
+print landfall_country_raw
+print landfall_country
 print landfall
-
-
-
-
-
-#map.drawcoastlines()
-## draw a boundary around the map, fill the background.
-## this background will end up being the ocean color, since
-## the continents will be drawn on top.
-#map.drawmapboundary(fill_color='aqua')
-## fill continents, set lake color same as ocean color.
-#map.fillcontinents(color='coral',lake_color='aqua')
-#map.plot(Points[0],Points[1],'ko')
-#
 #plt.show()
 
 print("--- %s seconds ---" % (time.time() - start_time))

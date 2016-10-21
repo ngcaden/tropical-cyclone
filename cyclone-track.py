@@ -1,3 +1,11 @@
+"""
+    This programme loads the data obtained from Naval Oceanographer Portal of
+    historical cyclones in the East Asia region. It then excludes cyclones that 
+    do not get into the region of interest (west of 150 degree East). Finally,
+    it dump the data in JSON-formatted file 'cyclone-track'
+    
+"""
+
 #Import libraries
 import os, os.path
 import numpy as np
@@ -30,9 +38,6 @@ def convert(a):
             A.insert(0,'-')
         
     return float("".join(A))/10.
-
-
-
 
 os.chdir('/Users/nguyenquang30795/Desktop/BSc Project/cyclone-data')
 #List all the files in the folder
@@ -85,8 +90,18 @@ while cyclone < len([name for name in filelist]):
         i += 1
     
     #Combine longitude and latitude data to one
+    
     data = [lon,lat]
-    cyclone_track.append(data)
+    if all(longitude > 150 for longitude in lon):
+        pass
+    else:
+        if all(latitude <= 30 for latitude in lat):
+            if all(longitude > 130 for longitude in lon):
+                pass
+            else:
+                cyclone_track.append(data)
+        else:
+            cyclone_track.append(data)
     cyclone += 1
 
 with open('cyclone-track','wb') as dump:
