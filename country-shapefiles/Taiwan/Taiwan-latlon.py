@@ -15,6 +15,9 @@ import numpy as np
 from matplotlib.patches import Polygon
 from matplotlib.collections import PatchCollection
 from matplotlib.patches import PathPatch
+import os
+import json
+from LatLon import LatLon
 
 
 # Calculation of area using shoelace method
@@ -118,10 +121,73 @@ min_latitude = all_latitude[0]
 max_longitude = all_longitude[-1]
 min_longitude = all_longitude[0]
 
-print min_latitude
-print max_latitude
-print min_longitude
-print max_longitude
+big_box = [min_longitude,max_longitude,min_latitude,max_latitude]
 
+# Change directory to cyclone-track
+os.chdir('/Users/nguyenquang30795/Desktop/BSc Project/cyclone-data')
+
+# Write longitude and latitude data to a json file
+with open('taiwan-latlon','wb') as dump:
+    dump.write(json.dumps(big_box))
+
+# Define how small the small boxes are
+division = 0.2
+
+# Round latitude
+max_rounded_latitude = round(max_latitude*5)/5
+min_rounded_latitude = round(min_latitude*5)/5
+
+# Find the number of small boxes
+no_small_boxes = int((max_rounded_latitude - min_rounded_latitude) / 0.2)
+
+
+small_lonlat =[]
+small_lonlat_onmap_raw = []
+box_number = 0
+while box_number < no_small_boxes:
+    
+    # Find the max and min of latitude of the small box
+    max_small_lat = min_rounded_latitude + (box_number+1) * 0.2
+    min_small_lat = min_rounded_latitude + (box_number) * 0.2
+    
+    # Create an empty list to store all the longitude within the smal box
+    small_lon_list = []
+
+    small_point_number = 0
+    while small_point_number < len(island_latlon):
+        # Determine the longitude and latitude of the point
+        small_lon = (island_latlon[small_point_number])[0]
+        small_lat = (island_latlon[small_point_number])[1]
+
+        # If the latitude lies between the range of latitude of the small box, add the longitude
+        if small_lat < max_small_lat and small_lat >= min_small_lat:
+            small_lon_list.append(small_lon)
+        small_point_number += 1
+
+    # Sort the longitude within the small box
+    small_lon_list.sort()
+    
+    small_lonlat.append([min_small_lat,max_small_lat,small_lon_list[0],small_lon_list[-1]])
+    small_lonlat_onmap_raw.append([small_lon_list[0],max_small_lat])
+    small_lonlat_onmap_raw.append([small_lon_list[-1],max_small_lat])
+    small_lonlat_onmap_raw.append([small_lon_list[0],min_small_lat])
+    small_lonlat_onmap_raw.append([small_lon_list[-1],min_small_lat])
+    box_number += 1
+
+
+small_lonlat_onmap_x = []
+small_lonlat_onmap_y = []
+for item in small_lonlat_onmap_raw:
+    temp = map(item[0],item[1])
+    small_lonlat_onmap_x.append(temp[0])
+    small_lonlat_onmap_y.append(temp[1])
+
+plt.plot(small_lonlat_onmap_x,small_lonlat_onmap_y, 'ko')
 plt.title("Map of %s" % country)
-plt.show()   
+plt.show()
+
+
+
+
+
+

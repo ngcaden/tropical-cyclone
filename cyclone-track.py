@@ -1,8 +1,7 @@
 """
     This programme loads the data obtained from Naval Oceanographer Portal of
-    historical cyclones in the East Asia region. It then excludes cyclones that 
-    do not get into the region of interest (west of 150 degree East). Finally,
-    it dump the data in JSON-formatted file 'cyclone-track'
+    historical cyclones in the East Asia region. It dump the data in JSON-formatted 
+    file 'cyclone-track'.
     
 """
 
