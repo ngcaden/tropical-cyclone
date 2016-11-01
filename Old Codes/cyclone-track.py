@@ -81,7 +81,7 @@ file_name = 'cyclone-track-landfall-vmax'
 REL_PATH = REL_PATH = os.path.dirname(os.path.abspath(__file__))
 
 # cd the cyclone-data folder
-os.chdir(os.path.join(REL_PATH,'cyclone-data'))
+os.chdir(os.path.join(REL_PATH,'cyclone-data/cyclone-track'))
 
 
 #Create empty list to store extracted information
