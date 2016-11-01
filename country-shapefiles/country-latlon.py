@@ -218,7 +218,7 @@ while country_number < len(countries):
             
         # Get the maximum and minimum longitudes for the boxes
         for item in f_lon_list:
-            small_lonlat.extend([item,(max_small_lat+min_small_lat)/2.])
+            small_lonlat.append([item,(max_small_lat+min_small_lat)/2.])
 
 
         for item in f_lon_list:
@@ -228,10 +228,10 @@ while country_number < len(countries):
         progress(box_number, no_small_boxes)
     
     # Change directory to cyclone-track
-    os.chdir(os.path.join(REL_PATH, '../cyclone-data'))
+    os.chdir(os.path.join(REL_PATH, '../cyclone-data/latlon'))
 
     # Write longitude and latitude data to a json file
-    with open('%s-latlon' % country,'wb') as dump:
+    with open('%s' % country,'wb') as dump:
         dump.write(json.dumps([big_box,small_lonlat]))
 
 
@@ -251,4 +251,4 @@ while country_number < len(countries):
     os.chdir(REL_PATH)
 
 
-plt.show()
+# plt.show()
