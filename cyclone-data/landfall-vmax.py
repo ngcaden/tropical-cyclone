@@ -148,43 +148,6 @@ for country in countries:
 
         i = 0
 
-        # while i < (len(Interested_latitude)-1):
-        #     initial_point = [Interested_longitude[i],Interested_latitude[i]]
-        #     final_point = [Interested_longitude[i+1],Interested_latitude[i+1]]
-        #     init_point = LatLon(initial_point[1],initial_point[0])
-        #     fin_point = LatLon(final_point[1],final_point[0])
-        #     dis_between = init_point.distance(fin_point)
-
-        #     if initial_point != final_point:
-        #         intermediate_points = map.gcpoints(initial_point[0],
-        #             initial_point[1],final_point[0],final_point[1],
-        #             (dis_between/length_division + 1))
-        #         check = 0
-        #         while check < len(intermediate_points):
-        #             cyclone_position = LatLon((intermediate_points[1])[check],(intermediate_points[0])[check])
-        #             check2 = 0
-        #             check_result = []
-        #             while check2 < len(country_points):
-        #                 check_point = LatLon((country_points[check2])[1],(country_points[check2])[0])
-        #                 distance_calculated = cyclone_position.distance(check_point)
-        #                 if distance_calculated <= distance_from_land:
-        #                     check_result.append([True,distance_calculated,check2])
-        #                 else:
-        #                     check_result.append([False,distance_calculated,check2])
-        #                 check2 += 1
-                    
-        #             if all(item[0] == False for item in check_result): 
-        #                 check += 1
-
-        #             else:
-        #                 check_result.sort(key = lambda x:x[1])
-        #                 chosen = country_points[((check_result[0])[2])]
-        #                 landfall.append(chosen)
-        #                 check = len(intermediate_points)
-        #                 i = len(Interested_latitude)
-        #         progress(i,(len(Interested_latitude)-1))
-                    
-        #     i += 1
 
         while i < (len(Interested_point)-1):
             initial_point = Interested_point[i]
