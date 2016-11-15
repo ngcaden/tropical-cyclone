@@ -215,6 +215,8 @@ for country in countries:
     # cd the latlon folder
     os.chdir(os.path.join(REL_PATH,folder_name))
 
+    print 'Hello'
+
     with open('%s' % country,'wb') as dump:
         dump.write(json.dumps(landfall))
 
