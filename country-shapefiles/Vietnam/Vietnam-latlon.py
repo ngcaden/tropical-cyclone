@@ -38,14 +38,14 @@ def PolygonArea(corners):
 
 # PARAMETERS
 # Longitude and latitude of the country
-country = 'Philippines'
-position = [121.8,12.9]
+country = 'Vietnam'
+position = [108.2772,14.0583]
 # Define the boundaries in degrees from the centre for the country
 Range = 20.
 # Define the resolution in terms of latitude for the country
 division = 0.1
 # Define the total number of islands interested
-number_of_islands = 11
+number_of_islands = 1
 
 
 
@@ -201,9 +201,9 @@ while box_number < no_small_boxes:
 # Change directory to cyclone-track
 os.chdir(os.path.join(REL_PATH, '../../cyclone-data'))
 
-# Write longitude and latitude data to a json file
-with open('%s-latlon' % country,'wb') as dump:
-    dump.write(json.dumps([big_box,small_lonlat]))
+# # Write longitude and latitude data to a json file
+# with open('%s-latlon' % country,'wb') as dump:
+#     dump.write(json.dumps([big_box,small_lonlat]))
 
 
 # Plot the corners of small boxes on map

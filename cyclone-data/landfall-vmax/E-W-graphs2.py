@@ -1,6 +1,5 @@
 # Import libraries
 import matplotlib.pyplot as plt
-from matplotlib.path import Path
 import numpy as np
 import os, os.path
 import json
@@ -10,44 +9,56 @@ import sys
 # Define the relative path of the current working folder, which should be inside cyclone-data
 REL_PATH = os.path.dirname(os.path.abspath(__file__))
 
-# Create global data stores
-g_latitude = []
-g_vmax = []
+# Define countries that are deemed West or East
+East = ['Japan']
+West = ['Vietnam']
+
 
 
 # List all the files in the folder
 filelist = os.listdir(REL_PATH)
-for file in filelist:
-	if file != '.DS_Store':
-		if file != 'E-W-graphs2.py':
-			with open('%s' % file, 'rb') as dump:
-			    source = dump.read()
-			    data = json.loads(source)
 
-			# Create empty data stores for each country
-			east_landfall = []
-			west_landfall = []
-			
+for country in West:
+	with open('%s' % country, 'rb') as dump:
+	    source = dump.read()
+	    data = json.loads(source)
 
+	landfall_latitude = [item[0] for item in data]
+	plt.figure(1)
+	plt.title('%s Number of Landfalls vs Latitude' % country)
+	bins = np.arange(0,50,1)
 
-			for item in data:
-				start_lon = ((item[1])[2])[0]
-				end_lon = ((item[1])[3])[0]
-				if start_lon < end_lon:
-					west_landfall.append((item[0])[1])
-				else:
-					east_landfall.append((item[0])[1])
-			
-			east_landfall.sort()
-			e_bins = list(np.arange((round(east_landfall[0])-2),(round(east_landfall[-1])+2),1))
-			plt.figure(1)
-			plt.title('%s Number of Eastern Landfalls vs Latitude' % file)
-			plt.hist(east_landfall,bins=e_bins)
+	plt.hist(landfall_latitude, bins=bins)
 
-			west_landfall.sort()
-			w_bins = list(np.arange((round(west_landfall[0])-2),(round(west_landfall[-1])+2),1))
-			plt.figure(2)
-			plt.title('%s Number of Western Landfalls vs Latitude' % file)
-			plt.hist(west_landfall,bins=w_bins)
+	
+	# print landfall_latitude
+	# # Put bins index for each item
+	# inds = np.digitize(landfall_latitude,bins)
 
-			plt.show()
+	# # Find the list of available bins
+	# bins_available = []
+	# for item in inds:
+	# 	if (item in bins_available) == False:
+	# 		bins_available.append(item)
+	# print 
+	# bins_available.sort()
+
+	# y =[]
+
+	# for item in bins_available:
+	# 	# Create list to store all vmaxs in the bin
+	# 	vmaxs = []
+
+	# 	for item1 in landfall_latitude:
+	# 		if inds[landfall_latitude.index(item1)] == item:
+	# 			vmaxs.append((data[landfall_latitude.index(item1)])[2])
+	# 	print vmaxs
+	# 	y.append((sum(vmaxs)/len(vmaxs)))
+
+	# plt.figure(2)
+	# plt.title('%s Mean of Maximum Wind Speed vs Latitude' % country)
+	# plt.xlabel('Latitude / degree')
+	# plt.ylabel('Mean of Maximum Windspeed / knots')
+	# plt.bar(bins_available,y)
+
+	plt.show()

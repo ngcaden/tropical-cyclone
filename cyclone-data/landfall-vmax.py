@@ -38,8 +38,8 @@ def progress(count, total, suffix=''):
 # Set the resolution of the of the path needed in km
 length_division = 10.
 # List the countries that are being investigated
-# countries = ['China','Japan','Laos','North-Korea','Philippines','South-Korea','Taiwan','Vietnam']
-countries = ['Japan','Laos','North-Korea','Philippines','South-Korea','Vietnam']
+# countries = ['China','Japan','North-Korea','Philippines','South-Korea','Taiwan','Vietnam']
+countries = ['Japan']
 # Specify folder name to store output files
 folder_name = 'landfall-vmax'
 # Specify cyclone track data file to load
@@ -115,8 +115,6 @@ for country in countries:
         each_cyclone_track = cyclone_track[cyclone_number]
         
         # Empty lists to store interesting points for a cyclone
-        Interested_longitude = []
-        Interested_latitude = []
         Interested_point = []
 
         # Track the points of the cyclones to see whether it crosses the big box
@@ -134,8 +132,6 @@ for country in countries:
                 if longitude >= (min_longitude-Range) and next_longitude >= (min_longitude-Range):
                     if latitude <= (max_latitude+Range) and next_latitude <= (max_latitude+Range):
                         if latitude >= (min_latitude-Range) and next_latitude >= (min_latitude-Range):
-                            Interested_longitude.extend([longitude,next_longitude])
-                            Interested_latitude.extend([latitude,next_latitude])
                             temp = []
                             temp2 = []
                             for item in each_cyclone_track:
@@ -148,6 +144,8 @@ for country in countries:
 
         i = 0
 
+
+        cyclone_landfall_points = []
 
         while i < (len(Interested_point)-1):
             initial_point = Interested_point[i]
@@ -165,39 +163,51 @@ for country in countries:
                 
                 check = 0
                 while check < len(intermediate_points[1]):
+                    
+
                     cyclone_position = LatLon((intermediate_points[1])[check],
                                 (intermediate_points[0])[check])
 
                     check2 = 0
-                    check_result = []
+
                     while check2 < len(country_points):
                         check_point = LatLon((country_points[check2])[1],(country_points[check2])[0])
                         distance_calculated = cyclone_position.distance(check_point)
+                        
+                        # If the distane from the centre of the cyclone to land is smaller than the set value,
+                        # add to list cyclone_landfall_points
                         if distance_calculated <= distance_from_land:
-                            check_result.append([True,distance_calculated,check2])
-                        else:
-                            check_result.append([False,distance_calculated,check2])
+                            cyclone_landfall_points.append([(intermediate_points[0])[check],
+                                (intermediate_points[1])[check],initial_point[2]])
+                        
                         check2 += 1
-
-
-
-                    if all(item[0] == False for item in check_result): 
-                        check += 1
-
-                    else:
-                        check_result.sort(key = lambda x:x[1])
-                        chosen = country_points[((check_result[0])[2])]
-                        cyclone_info = [(intermediate_points[index_longitude])[check],
-                                (intermediate_points[index_latitude])[check],
-                                initial_point,final_point,(check_result[0])[1]]
-
-                        landfall.append([chosen,cyclone_info])
-                        check = len(intermediate_points[1])
-                        i = len(Interested_point)-2
-                                    
+                    check += 1
             i += 1
             progress(i,(len(Interested_point)-1))
 
+        # Create bins of size 1 latitude
+        bins = np.arange(0,50,1)
+
+        # This states what bins the points belong to
+        inds = np.digitize([item[1] for item in cyclone_landfall_points],bins)
+
+        for item in bins:
+            # Get index of the latitude
+            latitude_index = list(bins).index(item)
+            temp_points = []
+
+            for item1 in inds:
+                if item1 == latitude_index:
+                    # If the points belong to the latitude bin, add to temp_points
+                    temp_points.append(cyclone_landfall_points[list(inds).index(item1)])
+
+            # If the list is not empty
+            if len(temp_points) != 0:
+                vmax = [v[2] for v in temp_points]
+                vmax.sort(reverse=True)
+                landfall.append([item,vmax[0]])
+            
+            
         print '%s Cyclone %i/%i done' %(country, (cyclone_number+1),len(cyclone_track))
         cyclone_number += 1
 
