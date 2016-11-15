@@ -48,16 +48,22 @@ def progress(count, total, suffix=''):
 
 # PARAMETERS
 # Longitude and latitude of the country and the total number of islands interested
-countries = ['China','Japan','Laos','North-Korea','Philippines','South-Korea','Taiwan','Vietnam']
-positions = [[104.1954,35.8617],[138.2529,36.2048],[102.4955,19.8563],[127.5101,40.3399],
-            [121.8,12.9],[127.7669,35.9078],[120.9605,23.6978],[108.2772,14.0583]]
-numbers_of_islands = [2,5,1,1,11,2,1,1]
+# countries = ['China','Japan','North-Korea','Philippines','South-Korea','Taiwan','Vietnam']
+# positions = [[104.1954,35.8617],[138.2529,36.2048],[127.5101,40.3399],
+#             [121.8,12.9],[127.7669,35.9078],[120.9605,23.6978],[108.2772,14.0583]]
+
+countries = ['South-Korea']
+positions = [[127.7669,35.9078]]
+
+# numbers_of_islands = [2,5,1,11,2,1,1]
+numbers_of_islands = [2]
 # Define the resolution in terms of latitude for the country
 division = 0.1
 
+# Define the latitudes of the endings of coastline
+# coast_bound = [[[108.03,21.55],[121.84,41.03]],[[126.22,37.72],[128.36,38.62]],[[104.45,10.42],[108.03,21.55]]]
 
-
-
+coast_bound = [[[126.22,37.72],[128.36,38.62]]]
 
 
 # METHOD
@@ -75,8 +81,10 @@ while country_number < len(countries):
 
     if country == 'China':
         Range = 40.
+        landfind = 5.
     else:
         Range = 20.
+        landfind = 0.2
 
     # Extract latitude and longitude informationof the country
     latitude = position[1]
@@ -178,55 +186,65 @@ while country_number < len(countries):
     small_lonlat_onmap_raw = []
 
 
+    coast_lower = coast_bound[country_number][0]
+    coast_upper = coast_bound[country_number][1]
+
     # Get the longitude and latitude for the small boxes
     box_number = 0
+
     while box_number < no_small_boxes:
         
         # Find the max and min of latitude of the small box
         max_small_lat = min_rounded_latitude + (box_number+1) * 0.1
         min_small_lat = min_rounded_latitude + (box_number) * 0.1
-        
-        # Create an empty list to store all the longitude within the small box
-        small_lon_list = []
+    
+        if min_small_lat <= coast_upper[1]:
+            # Create an empty list to store all the longitude within the small box
+            small_lon_list = []
 
-        small_point_number = 0
-        while small_point_number < len(island_latlon):
-            # Determine the longitude and latitude of the point
-            small_lon = (island_latlon[small_point_number])[0]
-            small_lat = (island_latlon[small_point_number])[1]
+            small_point_number = 0
+            while small_point_number < len(island_latlon):
+                # Determine the longitude and latitude of the point
+                small_lon = (island_latlon[small_point_number])[0]
+                small_lat = (island_latlon[small_point_number])[1]
 
-            # If the latitude lies between the range of latitude of the small box, add the longitude
-            if small_lat < max_small_lat and small_lat >= min_small_lat:
-                small_lon_list.append(small_lon)
-            small_point_number += 1
+                # If the latitude lies between the range of latitude of the small box, add the longitude
+                if small_lat < max_small_lat and small_lat >= min_small_lat:
+                    small_lon_list.append(small_lon)
+                small_point_number += 1
 
-        # Sort the longitude within the small box
-        small_lon_list.sort()
-        
-        f_lon_list=[]
-        i=0
-        tempa=[]
-        while i<(len(small_lon_list)-1):        
-            if abs(small_lon_list[i]-small_lon_list[i+1])<=0.1 and i < (len(small_lon_list)-2):
-                tempa.append(small_lon_list[i])
-                
-            else:
-                tempa.append(small_lon_list[i])
-                f_lon_list.append(sum(tempa)/float(len(tempa)))
-                tempa=[]
-            i+=1
+            # Sort the longitude within the small box
+            small_lon_list.sort(reverse=True)
             
-        # Get the maximum and minimum longitudes for the boxes
-        for item in f_lon_list:
-            small_lonlat.append([item,(max_small_lat+min_small_lat)/2.])
+            f_lon_list=[]
+
+            i=0
+            tempa=[]
+            while i<(len(small_lon_list)-1):
+                if abs(small_lon_list[i]-small_lon_list[i+1])<=0.1 and i < (len(small_lon_list)-2):
+                    tempa.append(small_lon_list[i])
+                    
+                else:
+                    tempa.append(small_lon_list[i])
+                    f_lon_list.append(sum(tempa)/float(len(tempa)))
+                    tempa=[]
+                    if min_small_lat >= coast_lower[1] and abs(small_lon_list[i]-small_lon_list[i+1])>landfind:
+                        i = len(small_lon_list)
+                    elif small_lon_list[i+1]<coast_lower[0]:
+                        i = len(small_lon_list)
+                i+=1
+                
+            # Get the maximum and minimum longitudes for the boxes
+            for item in f_lon_list:
+                small_lonlat.append([item,(max_small_lat+min_small_lat)/2.])
 
 
-        for item in f_lon_list:
-            small_lonlat_onmap_raw.append([item,(max_small_lat+min_small_lat)/2.])
-        
+            for item in f_lon_list:
+                small_lonlat_onmap_raw.append([item,(max_small_lat+min_small_lat)/2.])
+            
         box_number += 1
         progress(box_number, no_small_boxes)
-    
+        
     # Change directory to cyclone-track
     os.chdir(os.path.join(REL_PATH, '../cyclone-data/latlon'))
 
@@ -243,12 +261,11 @@ while country_number < len(countries):
         small_lonlat_onmap_x.append(temp[0])
         small_lonlat_onmap_y.append(temp[1])
 
-    plt.plot(small_lonlat_onmap_x,small_lonlat_onmap_y, 'ko')
-    plt.title("Map of %s" % country)
+    ax.plot(small_lonlat_onmap_x,small_lonlat_onmap_y, 'ko')
+    ax.set_title("Map of %s" % country)
     
     country_number += 1
 
     os.chdir(REL_PATH)
 
-
-# plt.show()
+plt.show()
