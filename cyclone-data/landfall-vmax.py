@@ -8,8 +8,6 @@
 
 #Import libraries
 from mpl_toolkits.basemap import Basemap
-import matplotlib.pyplot as plt
-from matplotlib.path import Path
 import numpy as np
 import os, os.path
 import json
@@ -39,7 +37,7 @@ def progress(count, total, suffix=''):
 length_division = 10.
 # List the countries that are being investigated
 # countries = ['China','Japan','North-Korea','Philippines','South-Korea','Taiwan','Vietnam']
-countries = ['Japan']
+countries = ['Philippines']
 # Specify folder name to store output files
 folder_name = 'landfall-vmax'
 # Specify cyclone track data file to load
