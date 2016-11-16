@@ -37,7 +37,7 @@ def progress(count, total, suffix=''):
 length_division = 10.
 # List the countries that are being investigated
 # countries = ['China','Japan','North-Korea','Philippines','South-Korea','Taiwan','Vietnam']
-countries = ['Vietnam']
+countries = ['Taiwan']
 # Specify folder name to store output files
 folder_name = 'landfall-vmax'
 # Specify cyclone track data file to load
