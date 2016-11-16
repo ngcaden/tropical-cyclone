@@ -37,7 +37,7 @@ def progress(count, total, suffix=''):
 length_division = 10.
 # List the countries that are being investigated
 # countries = ['China','Japan','Philippines','South-Korea','Taiwan','Vietnam']
-countries = ['Japan']
+countries = ['Vietnam']
 # Specify folder name to store output files
 folder_name = 'landfall-vmax'
 # Specify cyclone track data file to load
@@ -201,7 +201,7 @@ for country in countries:
             # If the list is not empty
             if len(temp_points) != 0:
                 vmax = [v[2] for v in temp_points]
-                vmax.sort(reverse=True)
+                # vmax.sort(reverse=True)
                 landfall.append([item,vmax[0]])
             
             
