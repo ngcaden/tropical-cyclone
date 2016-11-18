@@ -27,9 +27,8 @@ binwidth = 0.1
 REL_PATH = os.path.dirname(os.path.abspath(__file__))
 
 # Define countries that are deemed West or East
-East = ['Taiwan','Philippines']
-West = ['Vietnam']
-
+East = ['Taiwan','Philippines','Japan']
+West = ['Vietnam','China','South-Korea']
 
 East_landfall = []
 East_vmax = []
@@ -53,54 +52,54 @@ for country in East:
 	East_landfall.extend(landfall_latitude)
 	East_vmax.extend(landfall_vmax)
 
-	# Create a bins for all the latitudes recorded
-	bins = np.arange(min(landfall_latitude), 
-			max(landfall_latitude) + binwidth, binwidth)
+	# # Create a bins for all the latitudes recorded
+	# bins = np.arange(min(landfall_latitude), 
+	# 		max(landfall_latitude) + binwidth, binwidth)
 
-	# Plot a histogram of landfall latitude 
-	plt.figure()
-	plt.title('%s Number of Landfalls vs Latitude' % country)
-	plt.xlabel('Latitude')
-	plt.ylabel('Counts')
-	plt.hist(landfall_latitude, bins=bins)
+	# # Plot a histogram of landfall latitude 
+	# plt.figure()
+	# plt.title('%s Number of Landfalls vs Latitude' % country)
+	# plt.xlabel('Latitude')
+	# plt.ylabel('Counts')
+	# plt.hist(landfall_latitude, bins=bins)
 	
 	
-	# Put bins index for latitude
-	inds = np.digitize(landfall_latitude,bins)
+	# # Put bins index for latitude
+	# inds = np.digitize(landfall_latitude,bins)
 
-	# Create a list for mean vmaxs
-	mean_vmax =[]
+	# # Create a list for mean vmaxs
+	# mean_vmax =[]
 
-	bin_number = 0
-	while bin_number < len(bins):
-		# Create list to store all vmaxs in the bin
-		vmaxs = []
+	# bin_number = 0
+	# while bin_number < len(bins):
+	# 	# Create list to store all vmaxs in the bin
+	# 	vmaxs = []
 
-		latitude_number = 0
+	# 	latitude_number = 0
 
-		while latitude_number < len(landfall_latitude):
-			# Check for points in the bins
-			if inds[latitude_number] == bin_number:
-				# If the point is in the bin, add vmax to list vmaxs
-				vmaxs.append(landfall_vmax[latitude_number])
-			latitude_number += 1
+	# 	while latitude_number < len(landfall_latitude):
+	# 		# Check for points in the bins
+	# 		if inds[latitude_number] == bin_number:
+	# 			# If the point is in the bin, add vmax to list vmaxs
+	# 			vmaxs.append(landfall_vmax[latitude_number])
+	# 		latitude_number += 1
 
-		# If no point exist, add 0 to list mean vmax
-		if len(vmaxs) == 0:
-			mean_vmax.append(0)
+	# 	# If no point exist, add 0 to list mean vmax
+	# 	if len(vmaxs) == 0:
+	# 		mean_vmax.append(0)
 
-		# If not, calculate and add the mean
-		else:		
-			mean_vmax.append(sum(vmaxs)/len(vmaxs))
-		bin_number += 1
-		progress(bin_number,len(bins))
+	# 	# If not, calculate and add the mean
+	# 	else:		
+	# 		mean_vmax.append(sum(vmaxs)/len(vmaxs))
+	# 	bin_number += 1
+	# 	progress(bin_number,len(bins))
 
-	# Plot mean vmax against latitude
-	plt.figure()
-	plt.title('%s Mean of Maximum Wind Speed vs Latitude' % country)
-	plt.xlabel('Latitude / degree')
-	plt.ylabel('Mean of Maximum Windspeed at Landfall / knots')
-	plt.bar(bins,mean_vmax,width=0.1)
+	# # Plot mean vmax against latitude
+	# plt.figure()
+	# plt.title('%s Mean of Maximum Wind Speed vs Latitude' % country)
+	# plt.xlabel('Latitude / degree')
+	# plt.ylabel('Mean of Maximum Windspeed at Landfall / knots')
+	# plt.bar(bins,mean_vmax,width=0.1)
 
 
 
@@ -121,54 +120,54 @@ for country in West:
 	West_landfall.extend(landfall_latitude)
 	West_vmax.extend(landfall_vmax)
 
-	# Create a bins for all the latitudes recorded
-	bins = np.arange(min(landfall_latitude), 
-			max(landfall_latitude) + binwidth, binwidth)
+	# # Create a bins for all the latitudes recorded
+	# bins = np.arange(min(landfall_latitude), 
+	# 		max(landfall_latitude) + binwidth, binwidth)
 
 
-	# Plot a histogram of landfall latitude 
-	plt.figure()
-	plt.title('%s Number of Landfalls vs Latitude' % country)
-	plt.xlabel('Latitude')
-	plt.ylabel('Counts')
-	plt.hist(landfall_latitude, bins=bins)
+	# # Plot a histogram of landfall latitude 
+	# plt.figure()
+	# plt.title('%s Number of Landfalls vs Latitude' % country)
+	# plt.xlabel('Latitude')
+	# plt.ylabel('Counts')
+	# plt.hist(landfall_latitude, bins=bins)
 	
-	# Put bins index for latitude
-	inds = np.digitize(landfall_latitude,bins)
+	# # Put bins index for latitude
+	# inds = np.digitize(landfall_latitude,bins)
 
-	# Create a list for mean vmaxs
-	mean_vmax =[]
+	# # Create a list for mean vmaxs
+	# mean_vmax =[]
 
-	bin_number = 0
-	while bin_number < len(bins):
-		# Create list to store all vmaxs in the bin
-		vmaxs = []
+	# bin_number = 0
+	# while bin_number < len(bins):
+	# 	# Create list to store all vmaxs in the bin
+	# 	vmaxs = []
 
-		latitude_number = 0
+	# 	latitude_number = 0
 
-		while latitude_number < len(landfall_latitude):
-			# Check for points in the bins
-			if inds[latitude_number] == bin_number:
-				# If the point is in the bin, add vmax to list vmaxs
-				vmaxs.append(landfall_vmax[latitude_number])
-			latitude_number += 1
+	# 	while latitude_number < len(landfall_latitude):
+	# 		# Check for points in the bins
+	# 		if inds[latitude_number] == bin_number:
+	# 			# If the point is in the bin, add vmax to list vmaxs
+	# 			vmaxs.append(landfall_vmax[latitude_number])
+	# 		latitude_number += 1
 
-		# If no point exist, add 0 to list mean vmax
-		if len(vmaxs) == 0:
-			mean_vmax.append(0)
+	# 	# If no point exist, add 0 to list mean vmax
+	# 	if len(vmaxs) == 0:
+	# 		mean_vmax.append(0)
 
-		# If not, calculate and add the mean
-		else:		
-			mean_vmax.append(sum(vmaxs)/len(vmaxs))
-		bin_number += 1
-		progress(bin_number,len(bins))
+	# 	# If not, calculate and add the mean
+	# 	else:		
+	# 		mean_vmax.append(sum(vmaxs)/len(vmaxs))
+	# 	bin_number += 1
+	# 	progress(bin_number,len(bins))
 
-	# Plot mean vmax against latitude
-	plt.figure()
-	plt.title('%s Mean of Maximum Wind Speed vs Latitude' % country)
-	plt.xlabel('Latitude / degree')
-	plt.ylabel('Mean of Maximum Windspeed at Landfall / knots')
-	plt.bar(bins,mean_vmax,width=0.1)
+	# # Plot mean vmax against latitude
+	# plt.figure()
+	# plt.title('%s Mean of Maximum Wind Speed vs Latitude' % country)
+	# plt.xlabel('Latitude / degree')
+	# plt.ylabel('Mean of Maximum Windspeed at Landfall / knots')
+	# plt.bar(bins,mean_vmax,width=0.1)
 
 
 
@@ -272,7 +271,7 @@ while bin_number < len(bins):
 
 # Plot mean vmax against latitude
 plt.figure()
-plt.title('Eastern Mean of Maximum Wind Speed vs Latitude')
+plt.title('Western Mean of Maximum Wind Speed vs Latitude')
 plt.xlabel('Latitude / degree')
 plt.ylabel('Mean of Maximum Windspeed at Landfall / knots')
 plt.bar(bins,mean_vmax,width=0.1)

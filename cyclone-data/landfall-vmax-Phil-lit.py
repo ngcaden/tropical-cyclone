@@ -34,7 +34,7 @@ def progress(count, total, suffix=''):
 
 # PARAMETER
 # Set the resolution of the of the path needed in km
-length_division = 20.
+length_division = 10.
 # List the countries that are being investigated
 # countries = ['China','Japan','Philippines','South-Korea','Taiwan','Vietnam']
 countries = ['Philippines']
@@ -177,7 +177,8 @@ for country in countries:
                         if distance_calculated <= distance_from_land:
                             cyclone_landfall_points.append([(country_points[check2])[0],
                                         (country_points[check2])[1],initial_point[2]])
-                        
+                            check2 = len(country_points)
+                            check = len(intermediate_points[1])
                         check2 += 1
                     check += 1
             i += 1
