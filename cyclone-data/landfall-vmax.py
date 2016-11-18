@@ -37,7 +37,7 @@ def progress(count, total, suffix=''):
 length_division = 10.
 # List the countries that are being investigated
 # countries = ['China','Japan','Philippines','South-Korea','Taiwan','Vietnam']
-countries = ['Vietnam']
+countries = ['Philippines']
 # Specify folder name to store output files
 folder_name = 'landfall-vmax'
 # Specify cyclone track data file to load
@@ -45,6 +45,8 @@ cyclone_track_file = 'cyclone-track-landfall-vmax'
 # Specify the data structure of the cyclone track data 
 structure = ['Lon','Lat','VMAX','CY','YYYYMMDDHH']
 
+# Specify binsize 
+binsize = 2.
 # Distance from land in km to be counsidered as landfall
 distance_from_land = 200
 # Define the range from land to sort the points
@@ -182,8 +184,8 @@ for country in countries:
             i += 1
             progress(i,(len(Interested_point)-1))
 
-        # Create bins of size 1 latitude
-        bins = np.arange(0,50,.1)
+        # Create bins of size binsize
+        bins = np.arange(0,50,binsize)
 
         # This states what bins the points belong to
         inds = np.digitize([item[1] for item in cyclone_landfall_points],bins)
