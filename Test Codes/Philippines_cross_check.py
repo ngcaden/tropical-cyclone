@@ -1,10 +1,10 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-bins = np.arange(7,19,2)
+bins = np.arange(6,18,2)
 
-records = [10,39,71,60,81,108]
+records = [6,22,48,35,39,55]
 
-plt.bar(bins,records)
+plt.bar(bins,records,width=2)
 
 plt.show()

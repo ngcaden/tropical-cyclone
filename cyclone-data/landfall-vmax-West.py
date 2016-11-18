@@ -1,11 +1,3 @@
-"""
-    This programme loads the cyclone track data and shapefile data for each country
-    in order to find landfall position and other parameters upon landfall.
-    
-    The programme will output results into a sepearate folder and for each country.
-    
-"""
-
 #Import libraries
 from mpl_toolkits.basemap import Basemap
 import numpy as np
@@ -34,10 +26,9 @@ def progress(count, total, suffix=''):
 
 # PARAMETER
 # Set the resolution of the of the path needed in km
-length_division = 20.
-# List the countries that are being investigated
-# countries = ['China','Japan','Philippines','South-Korea','Taiwan','Vietnam']
-countries = ['Philippines']
+length_division = 10.
+# List the countries in Western region
+countries = ['China','South-Korea','Vietnam']
 # Specify folder name to store output files
 folder_name = 'landfall-vmax'
 # Specify cyclone track data file to load
@@ -46,11 +37,11 @@ cyclone_track_file = 'cyclone-track-landfall-vmax'
 structure = ['Lon','Lat','VMAX','CY','YYYYMMDDHH']
 
 # Specify binsize 
-binsize = 2.
+binsize = 0.1
 # Distance from land in km to be counsidered as landfall
-distance_from_land = 10
+distance_from_land = 200
 # Define the range from land to sort the points
-Range = 1
+Range = 5
 
 
 # METHOD
@@ -73,14 +64,15 @@ with open('%s' % cyclone_track_file, 'rb') as file:
 os.chdir(REL_PATH)
 
 
+
+# Load all the coastline points of all the countries
+# cd the latlon folder
+os.chdir(os.path.join(REL_PATH,'latlon'))
+
+
+
+
 for country in countries:
-
-    # cd the latlon folder
-    os.chdir(os.path.join(REL_PATH,'latlon'))
-
-
-    print 'Analysing %s' % country
-
     # Read the latlon file of the country
     with open('%s' %country, 'rb') as file:
         source = file.read()

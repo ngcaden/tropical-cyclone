@@ -48,22 +48,22 @@ def progress(count, total, suffix=''):
 
 # PARAMETERS
 # Longitude and latitude of the country and the total number of islands interested
-# countries = ['China','Japan','North-Korea','Philippines','South-Korea','Taiwan','Vietnam']
+# countries = ['Malaysia','China','Japan','North-Korea','Philippines','South-Korea','Taiwan','Vietnam']
 # positions = [[104.1954,35.8617],[138.2529,36.2048],[127.5101,40.3399],
 #             [121.8,12.9],[127.7669,35.9078],[120.9605,23.6978],[108.2772,14.0583]]
 
-countries = ['South-Korea']
-positions = [[127.7669,35.9078]]
+countries = ['Malaysia']
+positions = [[101.97,4.21]]
 
-# numbers_of_islands = [2,5,1,11,2,1,1]
-numbers_of_islands = [2]
+# numbers_of_islands = [2,2,5,1,1,11,2,1,1]
+numbers_of_islands = [1]
 # Define the resolution in terms of latitude for the country
 division = 0.1
 
 # Define the latitudes of the endings of coastline
-# coast_bound = [[[108.03,21.55],[121.84,41.03]],[[126.22,37.72],[128.36,38.62]],[[104.45,10.42],[108.03,21.55]]]
+# coast_bound = [[[108.03,21.55],[121.84,41.03]],[[124.36,40],[130.7,42.3]],[[126.22,37.72],[128.36,38.62]],[[104.45,10.42],[108.03,21.55]]]
 
-coast_bound = [[[126.22,37.72],[128.36,38.62]]]
+coast_bound = [[[111.337,1.274],[117.59,4.17]]]
 
 
 # METHOD
@@ -84,7 +84,8 @@ while country_number < len(countries):
         landfind = 5.
     else:
         Range = 20.
-        landfind = 0.2
+        # landfind = 0.2
+        landfind = 5.
 
     # Extract latitude and longitude informationof the country
     latitude = position[1]
@@ -115,10 +116,6 @@ while country_number < len(countries):
     map = Basemap(projection='laea',lat_ts=latitude,
             lat_0=latitude,lon_0=longitude,resolution=None, llcrnrlon=left_bound,
             llcrnrlat=bottom_bound, urcrnrlon=right_bound,urcrnrlat=top_bound)
-
-    # Draw parallels and meridians
-    # map.drawparallels(np.arange(bottom_bound,top_bound,10.))
-    # map.drawmeridians(np.arange(left_bound,right_bound,10.))
 
     # Read the shapefile for the country
     map.readshapefile(shapefile = filename,
@@ -197,8 +194,9 @@ while country_number < len(countries):
         # Find the max and min of latitude of the small box
         max_small_lat = min_rounded_latitude + (box_number+1) * 0.1
         min_small_lat = min_rounded_latitude + (box_number) * 0.1
-    
-        if min_small_lat <= coast_upper[1]:
+        
+        if min_small_lat >= coast_lower[1]:
+        # if min_small_lat <= coast_upper[1]:
             # Create an empty list to store all the longitude within the small box
             small_lon_list = []
 
@@ -214,8 +212,8 @@ while country_number < len(countries):
                 small_point_number += 1
 
             # Sort the longitude within the small box
-            small_lon_list.sort(reverse=True)
-            
+            # small_lon_list.sort(reverse=True)
+            small_lon_list.sort()
             f_lon_list=[]
 
             i=0
@@ -228,9 +226,13 @@ while country_number < len(countries):
                     tempa.append(small_lon_list[i])
                     f_lon_list.append(sum(tempa)/float(len(tempa)))
                     tempa=[]
-                    if min_small_lat >= coast_lower[1] and abs(small_lon_list[i]-small_lon_list[i+1])>landfind:
+
+                    # if min_small_lat >= coast_lower[1] and abs(small_lon_list[i]-small_lon_list[i+1])>landfind:
+                    if min_small_lat >= coast_upper[1] and abs(small_lon_list[i]-small_lon_list[i+1])>landfind:
                         i = len(small_lon_list)
-                    elif small_lon_list[i+1]<coast_lower[0]:
+                    # elif small_lon_list[i+1]<coast_lower[0]:
+                    elif small_lon_list[i+1]<coast_upper[0] and min_small_lat <= coast_upper[1] and abs(small_lon_list[i]-small_lon_list[i+1])>3:
+
                         i = len(small_lon_list)
                 i+=1
                 
