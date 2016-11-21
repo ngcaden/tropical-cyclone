@@ -155,7 +155,7 @@ for country in countries:
             print Interested_point[i]
             print Interested_point[i+1]
 
-            if init_point != fin_point and dis_between != 0:
+            if init_point != fin_point and dis_between >= length_division:
                 intermediate_points = map.gcpoints(initial_point[index_longitude],
                     initial_point[index_latitude],final_point[index_longitude],final_point[index_latitude],
                     (round(dis_between/length_division)+1))
