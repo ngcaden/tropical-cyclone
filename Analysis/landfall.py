@@ -13,7 +13,7 @@
 length_division = 20.
 # List the countries that are being investigated
 # countries = ['China','Japan','Philippines','South-Korea','Taiwan','Vietnam']
-countries = ['Taiwan']
+countries = ['Japan']
 # Specify folder name to store output files
 folder_name = 'landfall'
 # Specify cyclone track data file to load
