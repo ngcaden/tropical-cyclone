@@ -13,7 +13,7 @@
 length_division = 20.
 # List the countries that are being investigated
 # countries = ['China','Japan','Philippines','South-Korea','Taiwan','Vietnam']
-countries = ['Japan']
+countries = ['Taiwan']
 # Specify folder name to store output files
 folder_name = 'landfall'
 # Specify cyclone track data file to load
@@ -152,7 +152,8 @@ for country in countries:
             init_point = LatLon(initial_point[index_latitude],initial_point[index_longitude])
             fin_point = LatLon(final_point[index_latitude],final_point[index_longitude])
             dis_between = init_point.distance(fin_point)
-           
+            print Interested_point[i]
+            print Interested_point[i+1]
 
             if init_point != fin_point and dis_between != 0:
                 intermediate_points = map.gcpoints(initial_point[index_longitude],
