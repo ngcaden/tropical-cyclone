@@ -13,7 +13,7 @@
 length_division = 20.
 # List the countries that are being investigated
 # countries = ['China','Japan','Philippines','South-Korea','Taiwan','Vietnam']
-countries = ['South-Korea']
+countries = ['Philippines']
 # Specify folder name to store output files
 folder_name = 'landfall'
 # Specify cyclone track data file to load
@@ -176,7 +176,7 @@ for country in countries:
                         # If the distane from the centre of the cyclone to land is smaller than the set value,
                         # add to list cyclone_landfall_points
                         if distance_calculated <= distance_from_land:
-                            cyclone_landfall_points.append([(country_points[check2])[1],(country_points[check2])[0],
+                            cyclone_landfall_points.append([(country_points[check2])[0],
                                         (country_points[check2])[1],initial_point,check,len(intermediate_points[1])])
                         
                         check2 += 1
