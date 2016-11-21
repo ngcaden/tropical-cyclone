@@ -176,7 +176,7 @@ for country in countries:
                         # If the distane from the centre of the cyclone to land is smaller than the set value,
                         # add to list cyclone_landfall_points
                         if distance_calculated <= distance_from_land:
-                            cyclone_landfall_points.append([(country_points[check2])[1],(country_points[check2])[0],
+                            cyclone_landfall_points.append([(country_points[check2])[0],
                                         (country_points[check2])[1],initial_point,check,len(intermediate_points[1])])
                         
                         check2 += 1
