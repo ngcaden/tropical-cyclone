@@ -1,5 +1,5 @@
 # PARAMETER
-country = 'Vietnam'
+country = 'Malaysia'
 binsize = 0.5
 
 
@@ -45,7 +45,7 @@ while cyclone_number < len(data):
     cyclone_data = data[cyclone_number]
 
     # Get location of landfall points
-    if country == ('Vietnam' or 'Taiwan' or 'Japan'):
+    if country == 'Vietnam' or country =='Taiwan' or country =='Japan':
         landfall_location = [[round(item[0]*10)/10,round(item[1]*10)/10,
                 (item[3])[2],(item[3])[4],(item[3])[3],
                 item[4],item[5]] for item in cyclone_data]
