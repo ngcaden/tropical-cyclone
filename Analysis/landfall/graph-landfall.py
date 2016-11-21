@@ -43,7 +43,7 @@ while cyclone_number < len(data):
     cyclone_data = data[cyclone_number]
 
     # Get location of landfall points
-    landfall_location = [[round(item[0]*10)/10,round(item[1]*10)/10] for item in cyclone_data]
+    landfall_location = [[round(item[0]*10)/10,round(item[1]*10)/10,(item[2])[2]] for item in cyclone_data]
 
     if len(landfall_location) != 0:
         # This states what bins the points belong to
