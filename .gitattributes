@@ -1,0 +1,6 @@
+Analysis/landfall/*.json filter=lfs diff=lfs merge=lfs -text
+Database/SeaSurfaceTemperature/HadISST_sst.nc filter=lfs diff=lfs merge=lfs -text
+Analysis/landfall/China.json filter=lfs diff=lfs merge=lfs -text
+Analysis/landfall/Philippines.json filter=lfs diff=lfs merge=lfs -text
+Analysis/landfall/Japan.json filter=lfs diff=lfs merge=lfs -text
+Database/SeaSurfaceTemperature/ filter=lfs diff=lfs merge=lfs -text
