@@ -12,7 +12,8 @@
 # Set the resolution of the of the path needed in km
 length_division = 20.
 # List the countries that are being investigated
-countries = ['China']
+countries = ['North-Korea']
+
 # Specify folder name to store output files
 folder_name = 'landfall'
 # Specify cyclone track data file to load
