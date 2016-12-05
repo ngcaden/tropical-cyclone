@@ -1,5 +1,5 @@
 # PARAMETER
-countries = ['Vietnam','China','South-Korea','North-Korea']
+countries = ['Vietnam']
 # countries = ['Philippines']
 
 binsize = 1.
@@ -39,24 +39,24 @@ DATA = []
 for country in countries:
 
     # Open and loads data from every country
-    with open('%s' % country, 'rb') as file:
+    with open('%s.json' % country, 'rb') as file:
         source = file.read()
         
         # Get data from each country
         data = json.loads(source)
 
-
-        # Get location of landfall points
+        # If the country is Japan, delete the first data entry in each data point
         if country =='Japan':
             for item in data:
                 for item1 in item:
                     del item1[0]
 
-        # Add to the combined data list
-        DATA.extend(data)
+        # Add cyclone data to the combined data list
+        DATA.append(data)
 
 
 i = 0
+# Combine all data together
 while i < len(DATA[0]):
     sumup = []
     for item in DATA:
@@ -77,22 +77,28 @@ CHECK = []
 rmax = []
 R26 = []
 
+
+
 # Load each cyclone data
 cyclone_number = 0
-while cyclone_number < len(DATA):
+while cyclone_number < len(Combined_data):
     
     # Load data of each cyclone
-    cyclone_data = DATA[cyclone_number]
+    cyclone_data = Combined_data[cyclone_number]
 
+    # Load data points
     landfall_location = [[round(item[1]*10)/10,round(item[0]*10)/10,
                 (item[2])[2],(item[2])[4],(item[2])[3],
                 item[3],item[4]] for item in cyclone_data]
 
+    # If there are landfall
     if len(landfall_location) != 0:
         
         # Check for year larger than 1980 and only include data after 1980
         year_string = str((landfall_location[0])[2])
         year = int(''.join([year_string[0],year_string[1],year_string[2],year_string[3]]))
+
+        # Get the string for cyclone number in the year
         cy = (landfall_location[0])[4]
         cy_string = '%02d' % (cy,)
 
@@ -116,63 +122,68 @@ while cyclone_number < len(DATA):
                         temp_points.append(landfall_location[lat_point])
                     lat_point += 1
 
-                # If the there are points in the bin, add the bin to the landfall
+                # If the there are points in the bin
                 if len(temp_points) != 0:
                     
-                    # Sort using date
+                    # Sort using date to get the earliest landfall time
                     temp_points.sort(key=lambda item:item[2])
 
-                    
-                    
-                    # cd the folder of cyclone database
-                    os.chdir(os.path.join(REL_PATH,'../../Database/CycloneData/%s') % str(year))
-                    
-                    # List all files in the current directory
-                    list_of_files = [os.path.splitext(item) for item in os.listdir('.')]
 
-                    # Generate file name
-                    file_name = 'bwp%s%s' % (cy_string,str(year))
+                    # # CROSS CHECK WITH DATABASE TO GET RMAX AND R26
+                    # # cd the folder of cyclone database
+                    # os.chdir(os.path.join(REL_PATH,'../../Database/CycloneData/%s') % str(year))
+                    
+                    # # List all files in the current directory
+                    # list_of_files = [os.path.splitext(item) for item in os.listdir('.')]
 
-                    raw_data = []
-                    for item in list_of_files:
+                    # # Generate file name
+                    # file_name = 'bwp%s%s' % (cy_string,str(year))
+
+                    # raw_data = []
+                    # for item in list_of_files:
                         
-                        # If file name matches 
-                        if item[0] == file_name:
-                            # Open the file correspond with year and cyclone
-                            with open(item[0]+item[1],'r') as f:
-                                #Count the number of lines
-                                lines= sum(1 for line in enumerate(f))
+                    #     # If file name matches 
+                    #     if item[0] == file_name:
+                    #         # Open the file correspond with year and cyclone
+                    #         with open(item[0]+item[1],'r') as f:
+                    #             #Count the number of lines
+                    #             lines= sum(1 for line in enumerate(f))
 
-                            # Open the file correspond with year and cyclone
-                            with open(item[0]+item[1],'r') as f:       
-                                i = 0
-                                while i < lines:    
-                                    #Read each line
-                                    temp = f.readline()
-                                    #Split into individual strings before adding to raw_data
-                                    raw_data.append(temp.split(','),)
-                                    i += 1 
+                    #         # Open the file correspond with year and cyclone
+                    #         with open(item[0]+item[1],'r') as f:       
+                    #             i = 0
+                    #             while i < lines:    
+                    #                 #Read each line
+                    #                 temp = f.readline()
+                    #                 #Split into individual strings before adding to raw_data
+                    #                 raw_data.append(temp.split(','),)
+                    #                 i += 1 
                     
-                    for item in raw_data:
-                        # if time data match
-                        if int(item[2]) == int(year_string):
-                            try:
-                                rmax_value = int(item[19])
-                                if rmax_value != 0:
-                                    if int(item[11])==50:
-                                        rmax.append(rmax_value)
-                                        landfall.append(bins[bin_number])
-                                        # Add the vmax of the first landfall point
-                                        vmax.append((temp_points[0])[3])
-                                        R26_values = []
-                                        i = 13
-                                        while i < 17:
-                                            if int(item[i]) != 0:
-                                                R26_values.append(int(item[i]))
-                                            i+=1
-                                        R26.append(sum(R26_values)/len(R26_values))
-                            except:
-                                pass
+                    # for item in raw_data:
+                    #     # if time data match
+                    #     if int(item[2]) == int(year_string):
+                    #         try:
+                    #             rmax_value = int(item[19])
+                    #             if rmax_value != 0:
+                    #                 if int(item[11])==50:
+                    #                     rmax.append(rmax_value)
+                    #                     landfall.append(bins[bin_number])
+                    #                     # Add the vmax of the first landfall point
+                    #                     vmax.append((temp_points[0])[3])
+                    #                     R26_values = []
+                    #                     i = 13
+                    #                     while i < 17:
+                    #                         if int(item[i]) != 0:
+                    #                             R26_values.append(int(item[i]))
+                    #                         i+=1
+                    #                     R26.append(sum(R26_values)/len(R26_values))
+                    #         except:
+                    #             pass
+
+                    landfall.append(bins[bin_number])
+                    
+                    # Add the vmax of the first landfall point
+                    vmax.append((temp_points[0])[3])
 
                     # Add the data of the landfall point
                     data_points.append(temp_points[0])
@@ -180,7 +191,7 @@ while cyclone_number < len(DATA):
                 bin_number += 1
         
     cyclone_number += 1
-    progress(cyclone_number,len(DATA),'Western')
+    progress(cyclone_number,len(Combined_data),'Western')
 
 # Put bins index for latitude
 inds = np.digitize(landfall,bins)
@@ -226,75 +237,75 @@ while bin_number < len(bins):
     progress(bin_number,len(bins),'vmax')
 
 
-# Create a list for mean rmaxs
-mean_rmax = [] 
-std_rmax = []
-bin_number = 0
-while bin_number < len(bins):
-    # Create list to store all rmaxs in the bin
-    bin_rmaxs = []
+# # Create a list for mean rmaxs
+# mean_rmax = [] 
+# std_rmax = []
+# bin_number = 0
+# while bin_number < len(bins):
+#     # Create list to store all rmaxs in the bin
+#     bin_rmaxs = []
 
-    latitude_number = 0
+#     latitude_number = 0
 
-    while latitude_number < len(landfall):
+#     while latitude_number < len(landfall):
         
-        # Check for points in the bins
-        if inds[latitude_number] == bin_number:
-            # If the point is in the bin, add rmax to list rmaxs
-            bin_rmaxs.append(rmax[latitude_number])
-        latitude_number += 1
+#         # Check for points in the bins
+#         if inds[latitude_number] == bin_number:
+#             # If the point is in the bin, add rmax to list rmaxs
+#             bin_rmaxs.append(rmax[latitude_number])
+#         latitude_number += 1
 
-    # If no point exist, add 0 to list mean rmax
-    if len(bin_rmaxs) == 0:
-        mean_rmax.append(0)
-        std_rmax.append(0)
+#     # If no point exist, add 0 to list mean rmax
+#     if len(bin_rmaxs) == 0:
+#         mean_rmax.append(0)
+#         std_rmax.append(0)
     
-    # If not, calculate and add the mean
-    else:       
-        mean_rmax.append(float(sum(bin_rmaxs))/len(bin_rmaxs))
-        std_rmax.append(np.std(bin_rmaxs))
-    bin_number += 1
-    progress(bin_number,len(bins),'rmax')
+#     # If not, calculate and add the mean
+#     else:       
+#         mean_rmax.append(float(sum(bin_rmaxs))/len(bin_rmaxs))
+#         std_rmax.append(np.std(bin_rmaxs))
+#     bin_number += 1
+#     progress(bin_number,len(bins),'rmax')
 
-# Create a list for mean vmaxs
-mean_R26 = []
-std_R26 = []
-bin_number = 0
-while bin_number < len(bins):
-    # Create list to store all R26s in the bin
-    bin_R26s = []
+# # Create a list for mean vmaxs
+# mean_R26 = []
+# std_R26 = []
+# bin_number = 0
+# while bin_number < len(bins):
+#     # Create list to store all R26s in the bin
+#     bin_R26s = []
 
-    latitude_number = 0
+#     latitude_number = 0
 
-    while latitude_number < len(landfall):
+#     while latitude_number < len(landfall):
         
-        # Check for points in the bins
-        if inds[latitude_number] == bin_number:
-            # If the point is in the bin, add R26 to list R26s
-            bin_R26s.append(R26[latitude_number])
-        latitude_number += 1
-    print len(bin_R26s)
-    # If no point exist, add 0 to list mean R26
-    if len(bin_R26s) == 0:
-        mean_R26.append(0)
-        std_R26.append(0)
+#         # Check for points in the bins
+#         if inds[latitude_number] == bin_number:
+#             # If the point is in the bin, add R26 to list R26s
+#             bin_R26s.append(R26[latitude_number])
+#         latitude_number += 1
+#     print len(bin_R26s)
+#     # If no point exist, add 0 to list mean R26
+#     if len(bin_R26s) == 0:
+#         mean_R26.append(0)
+#         std_R26.append(0)
     
-    # If not, calculate and add the mean
-    else:       
-        mean_R26.append(float(sum(bin_R26s))/len(bin_R26s))
-        std_R26.append(np.std(bin_R26s))
-        # print bins[bin_number], bin_R26s
+#     # If not, calculate and add the mean
+#     else:       
+#         mean_R26.append(float(sum(bin_R26s))/len(bin_R26s))
+#         std_R26.append(np.std(bin_R26s))
+#         # print bins[bin_number], bin_R26s
 
-    # # If R26 bin is larger than 100, plot histogram
-    # if len(bin_R26s) >= 100:
-    #     plt.figure()
-    #     plt.title('R26 Histogram Latitude %f' % bins[bin_number])
-    #     plt.xlabel('R26')    
-    #     plt.ylabel('Counts')
-    #     R26_bin = np.arange(min(bin_R26s),max(bin_R26s)+5,5)
-    #     plt.hist(bin_R26s,R26_bin)
-    bin_number += 1
-    progress(bin_number,len(bins),'R26')
+#     # # If R26 bin is larger than 100, plot histogram
+#     # if len(bin_R26s) >= 100:
+#     #     plt.figure()
+#     #     plt.title('R26 Histogram Latitude %f' % bins[bin_number])
+#     #     plt.xlabel('R26')    
+#     #     plt.ylabel('Counts')
+#     #     R26_bin = np.arange(min(bin_R26s),max(bin_R26s)+5,5)
+#     #     plt.hist(bin_R26s,R26_bin)
+#     bin_number += 1
+#     progress(bin_number,len(bins),'R26')
 
 plt.figure()
 plt.title('Western Number of Landfalls vs Latitude')
@@ -306,20 +317,20 @@ plt.hist(landfall, bins=bins)
 plt.figure()
 plt.title('Western Mean of Maximum Wind Speed vs Latitude')
 plt.xlabel('Latitude / degree')
-plt.ylabel('Mean of Maximum Windspeed at Landfall / knots')
+plt.ylabel('Mean of Vmax at Landfall / knots')
 plt.bar(bins,mean_vmax,yerr=std_vmax,error_kw=dict(ecolor='gray'))
 
-plt.figure()
-plt.title('Western Mean of Maximum Wind Radius vs Latitude')
-plt.xlabel('Latitude / degree')
-plt.ylabel('Mean of Maximum Windspeed Radius at Landfall / nautical miles')
-plt.bar(bins,mean_rmax,yerr=std_rmax,error_kw=dict(ecolor='gray'))
+# plt.figure()
+# plt.title('Western Mean of Maximum Wind Radius vs Latitude')
+# plt.xlabel('Latitude / degree')
+# plt.ylabel('Mean of Rmax at Landfall / nautical miles')
+# plt.bar(bins,mean_rmax,yerr=std_rmax,error_kw=dict(ecolor='gray'))
 
-plt.figure()
-plt.title('Western Mean of R26 vs Latitude')
-plt.xlabel('Latitude / degree')
-plt.ylabel('Mean of R26 at Landfall / knots')
-plt.bar(bins,mean_R26,yerr=std_R26,error_kw=dict(ecolor='gray'))
+# plt.figure()
+# plt.title('Western Mean of R26 vs Latitude')
+# plt.xlabel('Latitude / degree')
+# plt.ylabel('Mean of R26 at Landfall / knots')
+# plt.bar(bins,mean_R26,yerr=std_R26,error_kw=dict(ecolor='gray'))
 
 # # Output data to quickplot file
 # with open('Western-quickplot', 'wb') as file:
