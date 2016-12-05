@@ -1,5 +1,6 @@
 # LIBRARY IMPORT
 import xarray as xr
+<<<<<<< HEAD
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -42,3 +43,14 @@ plt.show()
 
 
 
+=======
+# import matplotlib.pyplot as plt
+# import numpy as np
+
+# Unpack the dataset
+ds = xr.open_dataset('HadISST_sst.nc')
+
+SST = ds.sst
+
+print 
+>>>>>>> d043a3cb1a4807c7510bd7d773ed0ba9d4ce15ea
